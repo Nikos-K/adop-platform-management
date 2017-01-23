@@ -1,6 +1,4 @@
 // Constants
-def platformToolsGitURL = "ssh://jenkins@gerrit:29418/platform-management"
-
 def platformManagementFolderName= "/Platform_Management"
 def platformManagementFolder = folder(platformManagementFolderName) { displayName('Platform Management') }
 
@@ -31,7 +29,7 @@ while read repo_url; do
 
         # Check if the repository already exists or not
         repo_exists=0
-        list_of_repos=$(ssh -n -o StrictHostKeyChecking=no -p 29418 gerrit gerrit ls-projects --type code)
+        list_of_repos=$(ssh -n -o StrictHostKeyChecking=no -p 29418 ${ADOP_GERRIT_HOST} gerrit ls-projects --type code)
 
         for repo in ${list_of_repos}
         do
@@ -44,13 +42,13 @@ while read repo_url; do
 
         # If not, create it
         if [ ${repo_exists} -eq 0 ]; then
-            ssh -n -o StrictHostKeyChecking=no -p 29418 gerrit gerrit create-project --parent "All-Projects" "${target_repo_name}"
+            ssh -n -o StrictHostKeyChecking=no -p 29418 ${ADOP_GERRIT_HOST} gerrit create-project --parent "All-Projects" "${target_repo_name}"
         else
             echo "Repository already exists, skipping: ${target_repo_name}"
         fi
 
         # Populate repository
-        git clone ssh://jenkins@gerrit:29418/"${target_repo_name}"
+        git clone ssh://jenkins@${ADOP_GERRIT_HOST}:29418/"${target_repo_name}"
         cd "${repo_name}"
         git remote add source "${repo_url}"
         git fetch source
@@ -63,7 +61,7 @@ done < ${WORKSPACE}/platform-management/cartridges.txt''')
         git {
             remote {
                 name("origin")
-                url("${platformToolsGitURL}")
+                url("ssh://jenkins@${ADOP_GERRIT_HOST}:29418/platform-management")
                 credentials("adop-jenkins-master")
             }
             branch("*/master")

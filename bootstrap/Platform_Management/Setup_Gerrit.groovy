@@ -1,6 +1,4 @@
 // Constants
-def platformToolsGitURL = "ssh://jenkins@gerrit:29418/platform-management"
-
 def platformManagementFolderName= "/Platform_Management"
 def platformManagementFolder = folder(platformManagementFolderName) { displayName('Platform Management') }
 
@@ -12,16 +10,13 @@ setupGerritJob.with{
     wrappers {
         preBuildCleanup()
         sshAgent('adop-jenkins-master')
-        environmentVariables {
-            env('DC',"${LDAP_ROOTDN}")
-        }
     }
     steps {
         shell('''#!/bin/bash -ex
 
 # Fetch All-Projects 
 cd ${WORKSPACE}
-git clone ssh://jenkins@gerrit:29418/All-Projects
+git clone ssh://jenkins@${ADOP_GERRIT_HOST}:29418/All-Projects
 cd ${WORKSPACE}/All-Projects
 git fetch origin refs/meta/config:refs/remotes/origin/meta/config
 git checkout meta/config
@@ -50,7 +45,7 @@ fi''')
         git {
             remote {
                 name("origin")
-                url("${platformToolsGitURL}")
+                url("ssh://jenkins@${ADOP_GERRIT_HOST}:29418/platform-management")
                 credentials("adop-jenkins-master")
             }
             branch("*/master")

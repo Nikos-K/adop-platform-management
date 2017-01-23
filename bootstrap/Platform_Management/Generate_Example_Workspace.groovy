@@ -15,7 +15,7 @@ generateExampleWorkspaceJob.with{
         stringParam("workspaceAdmin","Admin","")
         stringParam("workspaceDeveloper","Developer","")
         stringParam("workspaceViewer","Viewer","")
-        stringParam("cartridgeURL","ssh://jenkins@gerrit:29418/cartridges/adop-cartridge-java.git","")
+        stringParam("cartridgeURL","ssh://jenkins@${ADOP_GERRIT_HOST}:29418/cartridges/adop-cartridge-java.git","")
     }
     properties {
         rebuild {
