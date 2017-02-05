@@ -8,13 +8,7 @@ def generateExampleWorkspaceJob = workflowJob(platformManagementFolderName + "/G
 generateExampleWorkspaceJob.with{
     parameters{
         stringParam("projectName","ExampleProject","")
-        stringParam("projectAdmin","Admin","")
-        stringParam("projectDeveloper","Developer","")
-        stringParam("projectViewer","Viewer","")
         stringParam("workspaceName","ExampleWorkspace","")
-        stringParam("workspaceAdmin","Admin","")
-        stringParam("workspaceDeveloper","Developer","")
-        stringParam("workspaceViewer","Viewer","")
         stringParam("cartridgeURL","ssh://jenkins@${ADOP_GERRIT_HOST}:29418/cartridges/adop-cartridge-java.git","")
     }
     properties {
@@ -26,10 +20,10 @@ generateExampleWorkspaceJob.with{
     definition {
         cps {
             script('''// Setup Workspace
-build job: 'Workspace_Management/Generate_Workspace', parameters: [[$class: 'StringParameterValue', name: 'WORKSPACE_NAME', value: "${workspaceName}"], [$class: 'StringParameterValue', name: 'ADMIN_USERS', value: "${workspaceName}${workspaceAdmin}"], [$class: 'StringParameterValue', name: 'DEVELOPER_USERS', value: "${workspaceName}${workspaceDeveloper}"], [$class: 'StringParameterValue', name: 'VIEWER_USERS', value: "${workspaceName}${workspaceViewer}"]]
+build job: 'Workspace_Management/Generate_Workspace', parameters: [[$class: 'StringParameterValue', name: 'WORKSPACE_NAME', value: "${workspaceName}"]]
 
 // Setup Faculty
-build job: "${workspaceName}/Project_Management/Generate_Project", parameters: [[$class: 'StringParameterValue', name: 'PROJECT_NAME', value: "${projectName}"], [$class: 'StringParameterValue', name: 'ADMIN_USERS', value: "${projectName}${projectAdmin}"], [$class: 'StringParameterValue', name: 'DEVELOPER_USERS', value: "${projectName}${projectDeveloper}"], [$class: 'StringParameterValue', name: 'VIEWER_USERS', value: "${projectName}${projectViewer}"]]
+build job: "${workspaceName}/Project_Management/Generate_Project", parameters: [[$class: 'StringParameterValue', name: 'PROJECT_NAME', value: "${projectName}"]]
 retry(5) {
     build job: "${workspaceName}/${projectName}/Cartridge_Management/Load_Cartridge", parameters: [[$class: 'StringParameterValue', name: 'CARTRIDGE_CLONE_URL', value: "${cartridgeURL}"]]
 }''')
