@@ -98,7 +98,7 @@ while read repo_url; do
 
         # If not, create it
         if [ ${repo_exists} -eq 0 ]; then
-            ssh -n -o StrictHostKeyChecking=no -p 29418 jenkins@${ADOP_GERRIT_HOST} gerrit create-project --parent "${permissions_repo}" "${target_repo_name}"
+            ssh -n -o StrictHostKeyChecking=no -p 29418 jenkins@${ADOP_GERRIT_HOST} gerrit create-project "${target_repo_name}"
         else
             echo "Repository already exists, skipping create: ${target_repo_name}"
         fi
